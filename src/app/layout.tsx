@@ -42,7 +42,7 @@ export default function RootLayout({
         "font-mono",
       )}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col dark:bg-[#131313]">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
