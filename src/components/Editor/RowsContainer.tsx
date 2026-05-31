@@ -1,4 +1,4 @@
-type RowsContainerProps = {
+interface RowsContainerProps {
     lineCount: number;
     scrollTop: number;
 }
