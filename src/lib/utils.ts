@@ -16,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatVars(vars: string[]): ParsedVar[] {
   const results: ParsedVar[] = [];
-  const variables = [...vars].slice(0, -1);
+  const variables = vars.length > 1 ? [...vars].slice(0, -1) : [...vars];
 
   const regex = /^(?:(const|let|var)\s+)?([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*(.*)$/;
 

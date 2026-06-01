@@ -1,19 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react"
-import { Textarea } from "@/components/ui/textarea"
-import RowsContainer from "./RowsContainer"
+import { useState } from "react"
+import CodeMirror from "@uiw/react-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
 import { runCode } from "@/lib/utils";
 
 export default function Editor() {
-    const [value, setValue] = useState('function Example() {\n  return "Hello World!";\n }');
-    const [scrollTop, setScrollTop] = useState(0);
-
-    const lineCount = useMemo(() => {
-        return Math.max(1, value.split("\n").length);
-    }, [value]);
+    const [value, setValue] = useState('function Example() {\n  return str;\n\ }\n\nreturn Example()');
 
     return (
         <div className="flex flex-col gap-4 w-200">
@@ -24,15 +19,14 @@ export default function Editor() {
                 Run Code
             </button>
             <Variables />
-            <div className="flex h-100">
-                <RowsContainer lineCount={lineCount} scrollTop={scrollTop} />
-                <Textarea
+            <div className="flex h-125 border border-input rounded-md overflow-hidden dark:focus-within:border-primary">
+                <CodeMirror
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}
-                    wrap="off"
-                    className="h-full flex-1 rounded-none border-l-0 focus:ring-0 focus:border-input focus-visible:ring-0 focus-visible:border-input dark:bg-[#0e0e0e]"
-                    spellCheck="false"
+                    theme="dark"
+                    height="100%"
+                    extensions={[javascript({ jsx: true })]}
+                    onChange={(val) => setValue(val)}
+                    className="w-full text-base"
                 />
             </div>
         </div>

@@ -6,7 +6,7 @@ interface VariablesState {
 }
 
 export const useVariablesStore = create<VariablesState>((set) => ({
-    variables: [""],
+    variables: ['const str = "Hello World!"'],
     setVariables: (index, newValue) => set(({variables}) => {
         const updated = [...variables];
         updated[index] = newValue;
