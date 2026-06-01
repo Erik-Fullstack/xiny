@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import RowsContainer from "./RowsContainer"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
-import { formatVars } from "@/lib/utils";
+import { runCode } from "@/lib/utils";
 
 export default function Editor() {
     const [value, setValue] = useState('function Example() {\n  return "Hello World!";\n }');
@@ -17,8 +17,13 @@ export default function Editor() {
 
     return (
         <div className="flex flex-col gap-4 w-200">
-            <button onClick={() => console.log(formatVars(useVariablesStore.getState().variables))}>temp log vars</button>
-            <Variables/>
+            <button
+                onClick={() => runCode(value, useVariablesStore.getState().variables)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded w-fit self-end font-semibold"
+            >
+                Run Code
+            </button>
+            <Variables />
             <div className="flex h-100">
                 <RowsContainer lineCount={lineCount} scrollTop={scrollTop} />
                 <Textarea
