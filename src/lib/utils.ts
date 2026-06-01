@@ -16,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatVars(vars: string[]): ParsedVar[] {
   const results: ParsedVar[] = [];
-  const variables = vars.length > 1 ? [...vars].slice(0, -1) : [...vars];
+  const variables = [...vars].slice(0, -1);
 
   const regex = /^(?:(const|let|var)\s+)?([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*(.*)$/;
 
@@ -40,26 +40,30 @@ export function formatVars(vars: string[]): ParsedVar[] {
  * @param codeAsString string The code to execute.
  * @param vars string[] of all variables used.
  */
-export function runCode(codeAsString: string, vars: string[],) {
+export function runCode(codeAsString: string, vars: string[], onLog?: (msg: string) => void) {
   const parsedVars = formatVars(vars);
 
   const varStatements = parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n');
 
   const executableCode = `
             ${varStatements}
-            // Execute the code provided in the editor (we wrap in an IIFE so returns are handled properly)
             const userScript = () => {
                 ${codeAsString}
             };
             return userScript();
         `;
 
+  const logger = onLog ?? ((msg: string) => console.log(msg));
+
   try {
     const result = new Function(executableCode)();
-    console.log("Execution Result:", result);
-    alert("Execution Result:\n" + result);
+    const out = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+    logger("Execution Result:\n" + out);
+    return result;
   } catch (err) {
     console.error("Error executing code:", err);
-    alert("Error:\n" + (err as Error).message);
+    const message = (err as Error).message || String(err);
+    logger("Error:\n" + message);
+    return undefined;
   }
-};
+}
