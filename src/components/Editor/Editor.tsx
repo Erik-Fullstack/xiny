@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react"
-import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
 import { runCode } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
+import ReturnWindow from "./ReturnWindow";
 
 export default function Editor() {
     const [value, setValue] = useState('function Example() {\n  return str;\n\ }\n\nreturn Example()');
@@ -17,9 +16,10 @@ export default function Editor() {
     const editorTheme = theme == "light" ? "light" : "dark"
 
     return (
-        <div className="grid grid-cols-[1fr_auto_1fr] w-full">
+        <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr] gap-4 w-full">
             <div />
-            <div className="flex flex-col gap-4 w-200">
+
+            <div className="row-start-1 col-start-2 flex flex-col w-200">
                 <button
                     onClick={() => {
                         setConsoleValue('');
@@ -30,14 +30,22 @@ export default function Editor() {
                     Run Code
                 </button>
                 <Variables />
+            </div>
+
+            <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
                 <MainWindow
                     value={value}
                     height="100%"
                     theme={editorTheme}
                     handleChange={(val) => setValue(val)}
                 />
+                <ReturnWindow
+                    value={value}
+                    theme={editorTheme}
+                />
             </div>
-            <div className="flex items-end pl-4">
+
+            <div className="flex items-start row-start-2 col-start-3">
                 <ConsoleWindow
                     value={consoleValue}
                     height="100%"
