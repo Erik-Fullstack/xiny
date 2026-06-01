@@ -1,17 +1,18 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { CodeMirrorProps } from "@/types/codeMirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
-export default function MainWindow({ value, theme, height}: CodeMirrorProps) {
+export default function MainWindow({ value }: CodeMirrorProps) {
     return (
         <div className="overflow-hidden">
             <div className="flex items-center pl-2 h-8 text-xs dark:bg-[#242424] w-full">Return</div>
             <CodeMirror
                 value={value}
-                theme={theme}
+                theme={vscodeDark}
                 extensions={[javascript({ jsx: true })]}
                 editable={false}
-                className="w-full h-full text-base border border-input dark:focus-within:border-primary bg-surface"
+                className="w-full h-full text-base  bg-surface"
             />
         </div>
     )

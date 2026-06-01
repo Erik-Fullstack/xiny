@@ -4,16 +4,14 @@ import { useState } from "react"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
 import { runCode } from "@/lib/utils";
-import { useTheme } from "next-themes";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
 import ReturnWindow from "./ReturnWindow";
 
 export default function Editor() {
-    const [value, setValue] = useState('function Example() {\n  return str;\n\ }\n\nreturn Example()');
+    const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
+    const [returnValue, setReturnValue] = useState("");
     const [consoleValue, setConsoleValue] = useState('');
-    const { theme } = useTheme();
-    const editorTheme = theme == "light" ? "light" : "dark"
 
     return (
         <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr] gap-4 w-full">
@@ -36,20 +34,15 @@ export default function Editor() {
                 <MainWindow
                     value={value}
                     height="100%"
-                    theme={editorTheme}
                     handleChange={(val) => setValue(val)}
                 />
-                <ReturnWindow
-                    value={value}
-                    theme={editorTheme}
-                />
+                {returnValue && <ReturnWindow value={returnValue} />}
             </div>
 
             <div className="flex items-start row-start-2 col-start-3">
                 <ConsoleWindow
                     value={consoleValue}
                     height="100%"
-                    theme={editorTheme}
                 />
             </div>
         </div>
