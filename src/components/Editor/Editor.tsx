@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
-import { runCode } from "@/lib/utils";
+import { formatCode } from "@/lib/utils";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
 import ReturnWindow from "./ReturnWindow";
@@ -11,7 +11,23 @@ import ReturnWindow from "./ReturnWindow";
 export default function Editor() {
     const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
     const [returnValue, setReturnValue] = useState("");
-    const [consoleValue, setConsoleValue] = useState('');
+    const [consoleValue, setConsoleValue] = useState("");
+
+    const runCode = (): string | undefined => {
+        const code = formatCode(value, useVariablesStore.getState().variables)
+
+        try {
+            const result = new Function(code)();
+            const output = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+            setReturnValue(() => output)
+            return result;
+        } catch(err) {
+            const error = err as Error
+            setConsoleValue(`${error.name}:\n${error.message}`)
+            setReturnValue("")
+            return ""
+        }
+    }
 
     return (
         <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr] gap-4 w-full">
@@ -21,7 +37,7 @@ export default function Editor() {
                 <button
                     onClick={() => {
                         setConsoleValue('');
-                        runCode(value, useVariablesStore.getState().variables, (msg) => setConsoleValue(prev => prev + msg + '\n'))
+                        runCode()
                     }}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
                 >

@@ -9,7 +9,7 @@ export default function Home() {
     <main className="flex flex-1 flex-col">
       <Navbar />
       <div className="flex flex-col justify-center items-center gap-5">
-        <InfoText/>
+        <InfoText />
         <Editor />
       </div>
     </main>

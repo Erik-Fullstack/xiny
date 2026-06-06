@@ -7,14 +7,14 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Formats variables from strings to structured variable objects.
+ * Parses variables from strings to structured variable objects.
  * 
  * @param vars string[]
  * @remarks Removes the last index of the array
  * because it will always contain an empty str.
- * @returns ParsedVar[] containing declaration, key, and value
+ * @returns ParseVar[] containing declaration, key, and value
  */
-export function formatVars(vars: string[]): ParsedVar[] {
+export function parseVars(vars: string[]): ParsedVar[] {
   const results: ParsedVar[] = [];
   const variables = [...vars].slice(0, -1);
 
@@ -30,7 +30,6 @@ export function formatVars(vars: string[]): ParsedVar[] {
       value: match[3].trim(),
     });
   }
-
   return results;
 }
 
@@ -40,30 +39,45 @@ export function formatVars(vars: string[]): ParsedVar[] {
  * @param codeAsString string The code to execute.
  * @param vars string[] of all variables used.
  */
-export function runCode(codeAsString: string, vars: string[], onLog?: (msg: string) => void) {
-  const parsedVars = formatVars(vars);
+export function runCode(codeAsString: string, vars: string[]) {
+
+  const parsedVars = parseVars(vars);
 
   const varStatements = parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n');
 
   const executableCode = `
-            ${varStatements}
             const userScript = () => {
+                ${varStatements}
                 ${codeAsString}
             };
             return userScript();
         `;
-
-  const logger = onLog ?? ((msg: string) => console.log(msg));
-
   try {
     const result = new Function(executableCode)();
-    const out = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
-    logger("Execution Result:\n" + out);
+    const out = typeof result === 'string' ? result : JSON.stringify(result);
     return result;
   } catch (err) {
-    console.error("Error executing code:", err);
     const message = (err as Error).message || String(err);
-    logger("Error:\n" + message);
-    return undefined;
+    return message;
   }
+}
+
+/**
+ * Formats the variables and codesnippet into executable code.
+ * 
+ * @param code string Everything written in the main editor.  
+ * @param vars string[] Variables as full string from inputs.
+ * @returns string Executable code as a string.
+ */
+export function formatCode(code: string, vars: string[]) {
+  const parsedVars = parseVars(vars);
+  const formattedVars = parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n');
+  const executableCode = `
+const script = () => {
+  ${formattedVars}
+  ${code}
+};
+return script();
+`
+  return executableCode
 }
