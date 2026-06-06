@@ -10,22 +10,23 @@ import ReturnWindow from "./ReturnWindow";
 
 export default function Editor() {
     const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
-    const [returnValue, setReturnValue] = useState("");
+    const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
 
-    const runCode = (): string | undefined => {
+    const runCode = () => {
         const code = formatCode(value, useVariablesStore.getState().variables)
 
         try {
             const result = new Function(code)();
-            const output = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
-            setReturnValue(() => output)
-            return result;
-        } catch(err) {
-            const error = err as Error
-            setConsoleValue(`${error.name}:\n${error.message}`)
-            setReturnValue("")
-            return ""
+            const output = typeof result === "string" ? result : JSON.stringify(result, null, 2);
+            setReturnValue(output)
+        } catch (error) {
+            if (error instanceof Error) {
+                setConsoleValue(`${error.name}:\n${error.message}`)
+            } else {
+                setConsoleValue(`Unknown error:\n${String(error)}`)
+            }
+            setReturnValue(null)
         }
     }
 
@@ -36,7 +37,7 @@ export default function Editor() {
             <div className="row-start-1 col-start-2 flex flex-col w-200">
                 <button
                     onClick={() => {
-                        setConsoleValue('');
+                        setConsoleValue("");
                         runCode()
                     }}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
