@@ -12,9 +12,10 @@ export default function Editor() {
     const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
+    const variables = useVariablesStore(s => s.variables)
 
     const runCode = () => {
-        const code = formatCode(value, useVariablesStore.getState().variables)
+        const code = formatCode(value, variables)
 
         try {
             const result = new Function(code)();
