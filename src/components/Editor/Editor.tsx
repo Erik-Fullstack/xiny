@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
-import { formatCode, formatVars, parseVars } from "@/lib/utils";
+import { formatCode } from "@/lib/utils";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
 import ReturnWindow from "./ReturnWindow";
@@ -13,6 +13,7 @@ export default function Editor() {
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
     const variables = useVariablesStore(s => s.variables);
+    const [returnedCode, setReturnedCode] = useState<string | null>("")
     const runCode = () => {
         const code = formatCode(value, variables)
 
@@ -31,6 +32,23 @@ export default function Editor() {
         }
     }
 
+    const convertCode = async () => {
+        try {
+            const response = await fetch('/api/convert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: formatCode(value, variables) }),
+            });
+            const data = await response.json();
+            const converted = data?.answer ?? null;
+            console.log(converted)
+            setReturnedCode(converted);
+        } catch (err) {
+            console.log(String(err));
+            setReturnedCode(null);
+        };
+    };
+
     return (
         <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr] gap-4 w-full">
             <div />
@@ -44,6 +62,14 @@ export default function Editor() {
                     className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
                 >
                     Run Code
+                </button>
+                <button
+                    onClick={() => {
+                        convertCode()
+                    }}
+                    className="mt-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
+                >
+                    convert Code
                 </button>
                 <Variables />
             </div>

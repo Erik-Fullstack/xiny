@@ -15,7 +15,7 @@ export default function Header() {
                 </InputGroupAddon>
             </InputGroup>
             <div className="absolute right-10">
-                <Button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>hej</Button>
+                <Button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>Theme</Button>
             </div>
         </header>
     )
