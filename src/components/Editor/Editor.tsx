@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
-import { formatCode } from "@/lib/utils";
+import { formatCode, formatVars, parseVars } from "@/lib/utils";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
 import ReturnWindow from "./ReturnWindow";
@@ -12,8 +12,7 @@ export default function Editor() {
     const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
-    const variables = useVariablesStore(s => s.variables)
-
+    const variables = useVariablesStore(s => s.variables);
     const runCode = () => {
         const code = formatCode(value, variables)
 
@@ -21,6 +20,7 @@ export default function Editor() {
             const result = new Function(code)();
             const output = typeof result === "string" ? result : JSON.stringify(result, null, 2);
             setReturnValue(output)
+            console.log(code)
         } catch (error) {
             if (error instanceof Error) {
                 setConsoleValue(`${error.name}:\n${error.message}`)

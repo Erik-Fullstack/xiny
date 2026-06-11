@@ -34,32 +34,12 @@ export function parseVars(vars: string[]): ParsedVar[] {
 }
 
 /**
- * Runs the code provided and logs/alerts the return value.
- * 
- * @param codeAsString string The code to execute.
- * @param vars string[] of all variables used.
+ * Formats the vars from object to codelines.
+ * @param parsedVars Parsedvar[] including declaration, key and value.
+ * @returns String A string with colon added after each variable and newline in between.
  */
-export function runCode(codeAsString: string, vars: string[]) {
-
-  const parsedVars = parseVars(vars);
-
-  const varStatements = parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n');
-
-  const executableCode = `
-            const userScript = () => {
-                ${varStatements}
-                ${codeAsString}
-            };
-            return userScript();
-        `;
-  try {
-    const result = new Function(executableCode)();
-    const out = typeof result === 'string' ? result : JSON.stringify(result);
-    return result;
-  } catch (err) {
-    const message = (err as Error).message || String(err);
-    return message;
-  }
+export function formatVars(parsedVars: ParsedVar[]) {
+  return parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n')
 }
 
 /**
@@ -71,7 +51,7 @@ export function runCode(codeAsString: string, vars: string[]) {
  */
 export function formatCode(code: string, vars: string[]) {
   const parsedVars = parseVars(vars);
-  const formattedVars = parsedVars.map(v => `${v.decl} ${v.key} = ${v.value};`).join('\n');
+  const formattedVars = formatVars(parsedVars);
   const executableCode = `
 const script = () => {
   ${formattedVars}
