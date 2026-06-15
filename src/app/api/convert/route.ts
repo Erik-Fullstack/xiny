@@ -11,19 +11,28 @@ export async function POST(req: Request) {
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `You are a coding expert.
-                I want to know how I would write this code in Python?
-                What problem does the code solve?
-                Answer STRICTLY in this format:
-                "{
-                    "code": code snippet in python,
-                    "problem": the problem the code solves
-                }"\n\n${code}`,
+            contents: `Convert this code to Python and explain what problem it solves:
+                ${code}`,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: "object",
+                    properties: {
+                        code: { type: "string" },
+                        problem: { type: "string" },
+                    },
+                    required: ["code", "problem"],
+                },
+            },
         });
 
-        return NextResponse.json({
-            answer: response.text,
-        });
+        if (!response.text) {
+            throw new Error("No response text from AI");
+        }
+
+        const data = JSON.parse(response.text);
+
+        return NextResponse.json(data);
     } catch (error) {
         console.error(error);
 

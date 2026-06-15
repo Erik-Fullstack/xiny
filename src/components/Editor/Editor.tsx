@@ -13,7 +13,7 @@ export default function Editor() {
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
     const variables = useVariablesStore(s => s.variables);
-    const [returnedCode, setReturnedCode] = useState<string | null>("")
+    const [returnedCode, setReturnedCode] = useState<{ code: string; problem: string } | null>(null)
     const runCode = () => {
         const code = formatCode(value, variables)
 
@@ -40,7 +40,7 @@ export default function Editor() {
                 body: JSON.stringify({ code: formatCode(value, variables) }),
             });
             const data = await response.json();
-            const converted = data?.answer ?? null;
+            const converted = data ?? null;
             console.log(converted)
             setReturnedCode(converted);
         } catch (err) {
