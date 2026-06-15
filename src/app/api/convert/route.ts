@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { ApiError, GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 const ai = new GoogleGenAI({
@@ -34,11 +34,18 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data);
     } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { error: "Failed to generate response" },
-            { status: 500 }
-        );
+        if (error instanceof ApiError) {
+            console.error(error.message)
+            return NextResponse.json(
+                { error: error.message },
+                { status: error.status }
+            )
+        } else {
+            console.error(error)
+            return NextResponse.json(
+                { error: "Failed to generate response" },
+                { status: 500 }
+            );
+        }
     }
 }

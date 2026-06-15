@@ -73,7 +73,7 @@ export default function Editor() {
                 </button>
                 <Variables />
             </div>
-
+            {!returnedCode &&
             <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
                 <MainWindow
                     value={value}
@@ -81,8 +81,16 @@ export default function Editor() {
                     handleChange={(val) => setValue(val)}
                 />
                 {returnValue && <ReturnWindow value={returnValue} />}
-            </div>
-
+            </div>}
+            {returnedCode &&
+            <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
+                <MainWindow
+                    value={returnedCode.code}
+                    height="100%"
+                    handleChange={(val) => setValue(val)}
+                />
+                {returnValue && <ReturnWindow value={returnValue} />}
+            </div>}
             <div className="flex items-start row-start-2 col-start-3">
                 <ConsoleWindow
                     value={consoleValue}
