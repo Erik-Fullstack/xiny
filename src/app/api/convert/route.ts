@@ -7,11 +7,11 @@ const ai = new GoogleGenAI({
 
 export async function POST(req: Request) {
     try {
-        const { code } = await req.json();
+        const { code, firstLang, finalLang } = await req.json();
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Convert this code to Python and explain what problem it solves:
+            contents: `Convert this ${firstLang} code to ${finalLang} and explain what problem it solves:
                 ${code}`,
             config: {
                 responseMimeType: "application/json",

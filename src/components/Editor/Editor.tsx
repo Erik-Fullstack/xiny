@@ -8,13 +8,14 @@ import { formatCode } from "@/lib/utils";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
 import ReturnWindow from "./ReturnWindow";
+import LanguageSelectors from "./LanguageSelectors";
 
 export default function Editor() {
     const [value, setValue] = useState('const message = str.toUpperCase()\n\nreturn message + "!"');
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
     const variables = useVariablesStore(s => s.variables);
-    const { returnedCode, setReturnedCode } = useConversionStore();
+    const { returnedCode, setReturnedCode, firstLang, finalLang } = useConversionStore();
     const runCode = () => {
         const code = formatCode(value, variables)
 
@@ -38,7 +39,11 @@ export default function Editor() {
             const response = await fetch('/api/convert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: formatCode(value, variables) }),
+                body: JSON.stringify({
+                    code: formatCode(value, variables),
+                    firstLang,
+                    finalLang
+                }),
             });
             const data = await response.json();
             const converted = data ?? null;
