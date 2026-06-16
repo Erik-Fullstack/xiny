@@ -4,6 +4,7 @@ import { python } from "@codemirror/lang-python";
 import { CodeMirrorProps } from "@/types/codeMirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { useConversionStore } from "@/stores/conversionStore";
+import CopyButton from "./CopyButton";
 
 export default function MainWindow({ value, height, handleChange }: CodeMirrorProps) {
     const returnedCode = useConversionStore(s => s.returnedCode);
@@ -12,6 +13,7 @@ export default function MainWindow({ value, height, handleChange }: CodeMirrorPr
         <div className="h-125 overflow-hidden">
             <div className="flex items-center pl-2 h-8 text-xs dark:bg-[#242424]">
                 {returnedCode ? "Python" : "JavaScript"}
+                <CopyButton value={value} />
             </div>
             <CodeMirror
                 value={value}
