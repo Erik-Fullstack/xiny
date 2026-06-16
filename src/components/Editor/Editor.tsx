@@ -42,7 +42,8 @@ export default function Editor() {
                 body: JSON.stringify({
                     code: formatCode(value, variables),
                     firstLang,
-                    finalLang
+                    finalLang,
+                    variables: variables.filter(v => v.trim() !== "")
                 }),
             });
             const data = await response.json();
@@ -82,7 +83,7 @@ export default function Editor() {
                     </button>
                 ) : !returnedCode && returnValue ? (
                     <button
-                        onClick={testConvert}
+                        onClick={convertCode}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
                     >
                         Convert Code
