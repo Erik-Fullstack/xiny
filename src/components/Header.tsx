@@ -56,9 +56,9 @@ export default function Header() {
         <header className="sticky top-0 z-50 bg-background dark:bg-[#131313] flex justify-center items-center w-full py-2.5 border-b-2">
             <div className="relative w-full max-w-2xl">
                 <InputGroup className="flex items-center w-full h-10 dark:bg-[#1f1f1f]">
-                    <InputGroupInput 
-                        className="placeholder:opacity-80" 
-                        placeholder="Search for code..." 
+                    <InputGroupInput
+                        className="placeholder:opacity-80"
+                        placeholder="Search for code..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => query.trim() && setIsOpen(true)}
@@ -73,7 +73,7 @@ export default function Header() {
                         {results.length > 0 ? (
                             <ul className="py-2">
                                 {results.map((res) => (
-                                    <li 
+                                    <li
                                         key={res._id}
                                         onClick={() => handleSelect(res)}
                                         className="px-4 py-3 hover:bg-muted cursor-pointer border-b last:border-0"
@@ -98,14 +98,14 @@ export default function Header() {
                     </div>
                 )}
             </div>
-            
+
             <div className="absolute right-10">
                 <Button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>Theme</Button>
             </div>
 
             {isOpen && (
-                <div 
-                    className="fixed inset-0 z-[-1]" 
+                <div
+                    className="fixed inset-0 z-[-1]"
                     onClick={() => setIsOpen(false)}
                 />
             )}
