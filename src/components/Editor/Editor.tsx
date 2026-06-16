@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Variables from "./Variables";
 import { useVariablesStore } from "@/stores/variablesStore";
+import { useConversionStore } from "@/stores/conversionStore";
 import { formatCode } from "@/lib/utils";
 import MainWindow from "./MainWindow";
 import ConsoleWindow from "./ConsoleWindow";
@@ -13,7 +14,7 @@ export default function Editor() {
     const [returnValue, setReturnValue] = useState<string | null>(null);
     const [consoleValue, setConsoleValue] = useState("");
     const variables = useVariablesStore(s => s.variables);
-    const [returnedCode, setReturnedCode] = useState<{ code: string; problem: string } | null>(null)
+    const { returnedCode, setReturnedCode } = useConversionStore();
     const runCode = () => {
         const code = formatCode(value, variables)
 
@@ -64,24 +65,31 @@ export default function Editor() {
             <div />
 
             <div className="row-start-1 col-start-2 flex flex-col w-200">
-                <button
-                    onClick={() => {
-                        setConsoleValue("");
-                        runCode()
-                    }}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
-                >
-                    Run Code
-                </button>
-                <button
-                    onClick={() => {
-                        // convertCode()
-                        testConvert()
-                    }}
-                    className="mt-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
-                >
-                    convert Code
-                </button>
+                {!returnedCode && !returnValue ? (
+                    <button
+                        onClick={() => {
+                            setConsoleValue("");
+                            runCode();
+                        }}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
+                    >
+                        Run Code
+                    </button>
+                ) : !returnedCode && returnValue ? (
+                    <button
+                        onClick={testConvert}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
+                    >
+                        Convert Code
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => setReturnedCode(null)}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
+                    >
+                        Reset
+                    </button>
+                )}
                 <Variables />
             </div>
             {!returnedCode &&
@@ -89,7 +97,10 @@ export default function Editor() {
                     <MainWindow
                         value={value}
                         height="100%"
-                        handleChange={(val) => setValue(val)}
+                        handleChange={(val) => {
+                            setValue(val);
+                            setReturnValue(null);
+                        }}
                     />
                     {returnValue && <ReturnWindow value={returnValue} />}
                 </div>}
@@ -100,14 +111,15 @@ export default function Editor() {
                         height="100%"
                         handleChange={(val) => setValue(val)}
                     />
-                    {returnValue && <ReturnWindow value={returnValue} />}
                 </div>}
-            <div className="flex items-start row-start-2 col-start-3">
-                <ConsoleWindow
-                    value={consoleValue}
-                    height="100%"
-                />
-            </div>
+            {!returnedCode && (
+                <div className="flex items-start row-start-2 col-start-3">
+                    <ConsoleWindow
+                        value={consoleValue}
+                        height="100%"
+                    />
+                </div>
+            )}
         </div>
     )
 }
