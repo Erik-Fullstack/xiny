@@ -49,6 +49,16 @@ export default function Editor() {
         };
     };
 
+    const testConvert = async () => {
+        // Mimic API delay
+        setTimeout(() => {
+            const data = {
+                "code": "def script():\n  str_var = \"Hello World\"\n  message = str_var.upper()\n  return message + \"!\"\n\nscript()",
+                "problem": "The code converts a given string \"Hello World\" to its uppercase equivalent (\"HELLO WORLD\") and then appends an exclamation mark to it, resulting in \"HELLO WORLD!\"."
+            };
+            setReturnedCode(data);
+        }, 1000)
+    };
     return (
         <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr] gap-4 w-full">
             <div />
@@ -65,7 +75,8 @@ export default function Editor() {
                 </button>
                 <button
                     onClick={() => {
-                        convertCode()
+                        // convertCode()
+                        testConvert()
                     }}
                     className="mt-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 w-fit self-end font-semibold"
                 >
@@ -74,23 +85,23 @@ export default function Editor() {
                 <Variables />
             </div>
             {!returnedCode &&
-            <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
-                <MainWindow
-                    value={value}
-                    height="100%"
-                    handleChange={(val) => setValue(val)}
-                />
-                {returnValue && <ReturnWindow value={returnValue} />}
-            </div>}
+                <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
+                    <MainWindow
+                        value={value}
+                        height="100%"
+                        handleChange={(val) => setValue(val)}
+                    />
+                    {returnValue && <ReturnWindow value={returnValue} />}
+                </div>}
             {returnedCode &&
-            <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
-                <MainWindow
-                    value={returnedCode.code}
-                    height="100%"
-                    handleChange={(val) => setValue(val)}
-                />
-                {returnValue && <ReturnWindow value={returnValue} />}
-            </div>}
+                <div className="row-start-2 col-start-2 flex flex-col w-200 gap-4">
+                    <MainWindow
+                        value={returnedCode.code}
+                        height="100%"
+                        handleChange={(val) => setValue(val)}
+                    />
+                    {returnValue && <ReturnWindow value={returnValue} />}
+                </div>}
             <div className="flex items-start row-start-2 col-start-3">
                 <ConsoleWindow
                     value={consoleValue}
