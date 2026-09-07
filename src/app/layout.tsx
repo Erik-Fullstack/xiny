@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono"
+  variable: "--font-mono",
 });
 
 const geistSans = Geist({

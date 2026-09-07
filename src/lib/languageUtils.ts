@@ -7,20 +7,20 @@ import { rust } from "@codemirror/lang-rust";
 import { SupportedLanguage } from "@/types/languages";
 
 export function getLanguageExtension(lang: SupportedLanguage) {
-    switch (lang) {
-        case 'javascript':
-            return javascript({ jsx: true });
-        case 'python':
-            return python();
-        case 'java':
-            return java();
-        case 'cpp':
-            return cpp();
-        case 'go':
-            return go();
-        case 'rust':
-            return rust();
-        default:
-            return javascript({ jsx: true });
-    }
+  switch (lang) {
+    case "javascript":
+      return javascript({ jsx: true });
+    case "python":
+      return python();
+    case "java":
+      return java();
+    case "cpp":
+      return cpp();
+    case "go":
+      return go();
+    case "rust":
+      return rust();
+    default:
+      return javascript({ jsx: true });
+  }
 }
